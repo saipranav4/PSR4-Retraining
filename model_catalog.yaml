@@ -1,0 +1,27 @@
+s3_config:
+  bucket_name: "zds-retraining-framework"
+  folders:
+    raw_train:        "Retraining_Framework_New/Input/New/Training/"
+    raw_val:          "Retraining_Framework_New/Input/New/Validation/"
+    raw_oos:          "Retraining_Framework_New/Input/New/OOS/"
+    preprocessed_train: "Retraining_Framework_New/Input/Preprocessed_Data/Training/"
+    preprocessed_val:   "Retraining_Framework_New/Input/Preprocessed_Data/Validation/"
+    preprocessed_oos:   "Retraining_Framework_New/Input/Preprocessed_Data/OOS/"
+    model_output:     "Retraining_Framework_New/Output/"
+
+production_models:
+  classification_psr4_project:
+    model: "XGBClassifier"
+    task_type: "classification"
+    target_variable: "OPTIN_TARGET_ACH"
+    # Baseline parameters that the model will use before/during tuning
+    hyperparameters: 
+      objective: "binary:logistic"
+      eval_metric: "aucpr"  # Optimize for PR-AUC natively in XGBoost
+    # The metrics we want our downstream evaluation script to track
+    metrics:
+      - "roc_auc"
+      - "average_precision"  # This is the PR-AUC metric
+      - "precision"
+      - "recall"
+      - "f1_score"
