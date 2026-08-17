@@ -992,40 +992,44 @@ def evaluate_classification_models(train_df, val_df, oos_df, models_data, global
 
         und_mask_oos = oos_df[segment_col] == 1
 
-        train_cb_10 = create_quantile_table(train_probs[cb_mask_train], y_train[cb_mask_train], 10)
+        # All segment tables (Train/Val/OOS × CB/UND) use OVERALL Train cutoffs
+        # so bucket boundaries are identical across Overall / CB / UND panels.
 
-        train_cb_20 = create_quantile_table(train_probs[cb_mask_train], y_train[cb_mask_train], 20)
+        overall_cutoffs_10 = get_cutoffs(train_10)
+        overall_cutoffs_20 = get_cutoffs_ventile(train_20)
 
-        train_und_10 = create_quantile_table(train_probs[und_mask_train], y_train[und_mask_train], 10)
+        # --- Train segment mappings ---
+        train_cb_mapping = pd.DataFrame({'PROB': train_probs[cb_mask_train], 'TARGET': y_train[cb_mask_train]})
+        train_cb_total   = y_train[cb_mask_train].sum()
+        train_cb_10 = create_valid_decile_analysis(overall_cutoffs_10, 'PROB', 'TARGET', train_cb_mapping, train_cb_total)
+        train_cb_20 = create_valid_decile_analysis(overall_cutoffs_20, 'PROB', 'TARGET', train_cb_mapping, train_cb_total)
 
-        train_und_20 = create_quantile_table(train_probs[und_mask_train], y_train[und_mask_train], 20)
+        train_und_mapping = pd.DataFrame({'PROB': train_probs[und_mask_train], 'TARGET': y_train[und_mask_train]})
+        train_und_total   = y_train[und_mask_train].sum()
+        train_und_10 = create_valid_decile_analysis(overall_cutoffs_10, 'PROB', 'TARGET', train_und_mapping, train_und_total)
+        train_und_20 = create_valid_decile_analysis(overall_cutoffs_20, 'PROB', 'TARGET', train_und_mapping, train_und_total)
 
-        val_cb_10 = create_quantile_table(val_probs[cb_mask_val], y_val[cb_mask_val], 10)
+        # --- Val segment mappings ---
+        val_cb_mapping = pd.DataFrame({'PROB': val_probs[cb_mask_val], 'TARGET': y_val[cb_mask_val]})
+        val_cb_total   = y_val[cb_mask_val].sum()
+        val_cb_10 = create_valid_decile_analysis(overall_cutoffs_10, 'PROB', 'TARGET', val_cb_mapping, val_cb_total)
+        val_cb_20 = create_valid_decile_analysis(overall_cutoffs_20, 'PROB', 'TARGET', val_cb_mapping, val_cb_total)
 
-        val_cb_20 = create_quantile_table(val_probs[cb_mask_val], y_val[cb_mask_val], 20)
+        val_und_mapping = pd.DataFrame({'PROB': val_probs[und_mask_val], 'TARGET': y_val[und_mask_val]})
+        val_und_total   = y_val[und_mask_val].sum()
+        val_und_10 = create_valid_decile_analysis(overall_cutoffs_10, 'PROB', 'TARGET', val_und_mapping, val_und_total)
+        val_und_20 = create_valid_decile_analysis(overall_cutoffs_20, 'PROB', 'TARGET', val_und_mapping, val_und_total)
 
-        val_und_10 = create_quantile_table(val_probs[und_mask_val], y_val[und_mask_val], 10)
-
-        val_und_20 = create_quantile_table(val_probs[und_mask_val], y_val[und_mask_val], 20)
-
-        # OOS segment decile tables — use Train's CB/UND cutoffs so the buckets
-        # are comparable across Train, Val, and OOS within each segment.
-
+        # --- OOS segment mappings ---
         oos_cb_mapping = pd.DataFrame({'PROB': oos_probs[cb_mask_oos], 'TARGET': y_oos[cb_mask_oos]})
-
-        oos_cb_total = y_oos[cb_mask_oos].sum()
-
-        oos_cb_10 = create_valid_decile_analysis(get_cutoffs(train_cb_10), 'PROB', 'TARGET', oos_cb_mapping, oos_cb_total)
-
-        oos_cb_20 = create_valid_decile_analysis(get_cutoffs_ventile(train_cb_20), 'PROB', 'TARGET', oos_cb_mapping, oos_cb_total)
+        oos_cb_total   = y_oos[cb_mask_oos].sum()
+        oos_cb_10 = create_valid_decile_analysis(overall_cutoffs_10, 'PROB', 'TARGET', oos_cb_mapping, oos_cb_total)
+        oos_cb_20 = create_valid_decile_analysis(overall_cutoffs_20, 'PROB', 'TARGET', oos_cb_mapping, oos_cb_total)
 
         oos_und_mapping = pd.DataFrame({'PROB': oos_probs[und_mask_oos], 'TARGET': y_oos[und_mask_oos]})
-
-        oos_und_total = y_oos[und_mask_oos].sum()
-
-        oos_und_10 = create_valid_decile_analysis(get_cutoffs(train_und_10), 'PROB', 'TARGET', oos_und_mapping, oos_und_total)
-
-        oos_und_20 = create_valid_decile_analysis(get_cutoffs_ventile(train_und_20), 'PROB', 'TARGET', oos_und_mapping, oos_und_total)
+        oos_und_total   = y_oos[und_mask_oos].sum()
+        oos_und_10 = create_valid_decile_analysis(overall_cutoffs_10, 'PROB', 'TARGET', oos_und_mapping, oos_und_total)
+        oos_und_20 = create_valid_decile_analysis(overall_cutoffs_20, 'PROB', 'TARGET', oos_und_mapping, oos_und_total)
 
         # --- ACCOUNT AGE TABLES (OVERALL + SEGMENTS) ---
 

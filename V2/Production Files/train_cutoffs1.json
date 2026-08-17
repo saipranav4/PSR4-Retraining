@@ -1,0 +1,10 @@
+{
+    "model_pickle": "Retraining_Framework_New/Output/classification_psr4_project__XGBClassifier__20260813_065552.pkl",
+    "n_train_rows_scored": 10182158,
+    "cutoffs": {
+        "Very_High": 0.9083800315856934,
+        "High": 0.8074964880943298,
+        "Medium": 0.6120331883430481,
+        "Low": 0.2822922468185425
+    }
+}

@@ -22,7 +22,7 @@ from imblearn.under_sampling import RandomUnderSampler
 
 # Local Imports
 from model_registry import MODEL_REGISTRY
-from catalog_loader import load_model_catalog, get_production_model_info, get_s3_config
+from catalog_loader import load_model_catalog, get_s3_config
 from hyperparameter_tuning import get_param_distributions, tune_model
 
 # ==============================================================

@@ -1,0 +1,16 @@
+{
+  "model_pickle": "Retraining_Framework_New/Output/classification_psr4_project__XGBClassifier__20260813_065552.pkl",
+  "train_file": "Retraining_Framework_New/Input/Preprocessed_Data/Training/train_data_new_20260814_113813.csv",
+  "n_train_rows_scored": 10182158,
+  "cutoffs": {
+    "d10_min": 0.8074965596199037,
+    "d9_min": 0.7013646960258484,
+    "d8_min": 0.5664723455905911,
+    "d7_min": 0.37565165758132935,
+    "d6_min": 0.18801242113113403,
+    "d5_min": 0.11993496119976044,
+    "d4_min": 0.07894247770309448,
+    "d3_min": 0.06678836792707443,
+    "d2_min": 0.03930756449699402
+  }
+}
